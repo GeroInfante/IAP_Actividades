@@ -1,0 +1,110 @@
+@startuml diagramaFlujo
+  'CheckLog
+  Client ->> UILogin: LoginUser()
+  activate Client
+  deactivate Client
+  activate UILogin
+  UILogin ->> PresenterLogin: Login(username, password)
+  deactivate UILogin
+  activate PresenterLogin
+  PresenterLogin ->> ModelLogin: authenticateLogin(username, password)
+  activate ModelLogin
+  ModelLogin ->> LocalFileService: CheckIfUserExist(username)
+  activate LocalFileService
+  LocalFileService -->> ModelLogin: User OK
+  ModelLogin ->> LocalFileService: CheckIfPasswordIsCorrect(username, password)
+  LocalFileService ->> ModelParser: getPassword(json)
+  activate ModelParser
+  ModelParser -->> LocalFileService: Send(password)
+  deactivate ModelParser
+  LocalFileService -->> ModelLogin: Password OK
+  deactivate LocalFileService
+  ModelLogin -->> PresenterLogin: Login success
+  deactivate ModelLogin
+
+  'CheckTypeOfUser
+  PresenterLogin ->> ModelLogin: CheckTypeOfUser(string name)
+  activate ModelLogin
+  ModelLogin ->> CheckTypeOfUser: getType(string username) 
+  deactivate ModelLogin
+  activate CheckTypeOfUser
+  CheckTypeOfUser -->> ModelLogin: TypeUser
+  deactivate CheckTypeOfUser
+  activate ModelLogin
+  ModelLogin -->> PresenterLogin: TypeUser=Admin
+  deactivate ModelLogin
+
+  'Logeo tipo Admin
+  PresenterLogin ->> UILogin: showAdmin()
+  deactivate PresenterLogin
+  UILogin ->> UIManager: changeLogPanelToAdminPanel()
+
+
+
+
+
+
+
+
+
+
+
+
+
+  activate UILogin
+  UILogin ->> UIManager: showUser(username)
+  deactivate UILogin
+  activate UIManager
+  UIManager ->>UIData: showUser(username)
+  deactivate UIManager
+  activate UIData
+  UIData ->>PresenterData: showUser(username)
+  deactivate UIData
+  activate PresenterData 
+  PresenterData ->> ModelData: GetAgentWithUsername(username)
+  activate ModelData
+  ModelData ->> LocalFileService: GetAgent(username)
+  activate LocalFileService
+  LocalFileService ->> ModelParser: GetUser(Json)
+  activate ModelParser
+  ModelParser -->> LocalFileService: send(PERSONA)
+  deactivate ModelParser
+  LocalFileService -->> ModelData: send(PERSONA)
+  deactivate LocalFileService
+  ModelData -->> PresenterData: send(PERSONA)
+  deactivate ModelData
+  PresenterData ->> ModelData: GetAgentImage(imageURL)
+  activate ModelData
+  ModelData ->> APIManager: GetTexture(imageURL)
+  APIManager -->> ModelData: send(IMAGE)
+  ModelData -->> PresenterData: send(IMAGE)
+  deactivate ModelData
+  PresenterData ->> UIData: showName(Persona.Nombre)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showLastName(Persona.Apellido)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showAge(Persona.Edad)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showPhone(Persona.Telefono)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showAddress(Persona.Direccion)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showEmail(Persona.Email)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showImage(IMAGE)
+  activate UIData
+  deactivate UIData
+  PresenterData ->> UIData: showDataPanel()
+  activate UIData
+  deactivate PresenterData
+  UIData ->> UIManager: ChangeLogPanelToDataPanel()
+  deactivate UIData
+  activate UIManager
+  deactivate UIManager
+@enduml
